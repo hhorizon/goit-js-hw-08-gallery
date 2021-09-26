@@ -63,3 +63,70 @@ const galleryItems = [
     description: 'Lighthouse Coast Sea',
   },
 ];
+
+
+
+// Создание и рендер разметки по массиву данных galleryItems из app.js
+
+const galleryUl = document.querySelector('.gallery');
+
+galleryItems.forEach(item => {
+  const li = document.createElement('li');
+  const link = document.createElement('a');
+  const img = document.createElement('img');
+
+  li.appendChild(link);
+  li.classList.add('gallery__item');
+
+  link.appendChild(img);
+  link.classList.add('gallery__link');
+  link.setAttribute('href', item.original);
+
+
+  img.classList.add('gallery__image');
+  img.setAttribute('src', item.preview);
+  img.setAttribute('alt', item.description);
+  img.setAttribute('data-source', item.original);
+
+  galleryUl.appendChild(li);
+});
+
+
+
+// Реализация делегирования на галерее ul.js-gallery и получение url большого изображения.
+// Открытие модального окна по клику на элементе галереи.
+// Подмена значения атрибута src элемента img.lightbox__image.
+
+const modal = document.querySelector('.lightbox');
+const modalImage = document.querySelector('.lightbox__image');
+
+galleryUl.addEventListener('click', openModal);
+
+function openModal(evt) {
+  modal.classList.add('is-open');
+  modalImage.src = evt.target.dataset.source;
+  modalImage.alt = evt.target.alt;
+  evt.preventDefault();
+};
+
+
+
+// Закрытие модального окна по клику на кнопку button[data-action="close-lightbox"].
+// Очистка значения атрибута src элемента img.lightbox__image. Это необходимо для того, чтобы при следующем открытии модального окна, пока грузится изображение, мы не видели предыдущее.
+
+const closeBtn = document.querySelector('.lightbox__button');
+
+closeBtn.addEventListener('click', closeModal);
+
+function closeModal(evt) {
+  modal.classList.remove('is-open');
+  modalImage.src = '';
+  modalImage.alt = '';
+};
+
+
+
+// Закрытие модального окна по клику на div.lightbox__overlay.
+
+const modalOverlay = document.querySelector('.lightbox__overlay');
+modalOverlay.addEventListener('click', closeModal);
